@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  prepend_view_path 'app/views/v1/default'
+  prepend_view_path File.expand_path('../../views/v1/default', __FILE__)
 
   protect_from_forgery
 
