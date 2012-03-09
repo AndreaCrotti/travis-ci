@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120304000505) do
+ActiveRecord::Schema.define(:version => 20120222082522) do
 
   create_table "artifacts", :force => true do |t|
     t.text     "content"
@@ -39,8 +39,6 @@ ActiveRecord::Schema.define(:version => 20120304000505) do
     t.string   "language"
     t.datetime "archived_at"
     t.integer  "duration"
-    t.integer  "owner_id"
-    t.string   "owner_type"
   end
 
   add_index "builds", ["repository_id"], :name => "index_builds_on_repository_id"
@@ -66,8 +64,8 @@ ActiveRecord::Schema.define(:version => 20120304000505) do
   create_table "jobs", :force => true do |t|
     t.integer  "repository_id"
     t.integer  "commit_id"
-    t.integer  "source_id"
-    t.string   "source_type"
+    t.integer  "owner_id"
+    t.string   "owner_type"
     t.string   "queue"
     t.string   "type"
     t.string   "state"
@@ -83,21 +81,11 @@ ActiveRecord::Schema.define(:version => 20120304000505) do
     t.text     "tags"
     t.integer  "retries",       :default => 0
     t.boolean  "allow_failure", :default => false
-    t.integer  "owner_id"
-    t.string   "owner_type"
   end
 
   add_index "jobs", ["queue", "state"], :name => "index_jobs_on_queue_and_state"
   add_index "jobs", ["repository_id"], :name => "index_jobs_on_repository_id"
-  add_index "jobs", ["type", "source_id", "source_type"], :name => "index_jobs_on_type_and_owner_id_and_owner_type"
-
-  create_table "organizations", :force => true do |t|
-    t.string   "name"
-    t.string   "login"
-    t.integer  "github_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
+  add_index "jobs", ["type", "owner_id", "owner_type"], :name => "index_jobs_on_type_and_owner_id_and_owner_type"
 
   create_table "repositories", :force => true do |t|
     t.string   "name"
@@ -116,8 +104,6 @@ ActiveRecord::Schema.define(:version => 20120304000505) do
     t.text     "description"
     t.string   "last_build_language"
     t.integer  "last_build_duration"
-    t.integer  "owner_id"
-    t.string   "owner_type"
   end
 
   add_index "repositories", ["last_build_started_at"], :name => "index_repositories_on_last_build_started_at"
